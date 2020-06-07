@@ -9,11 +9,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-app.get('/usuarios', function(req, res) {
-    res.json('get Usuario')
+app.get('/users', function(req, res) {
+    res.json('get Users')
 });
 
-app.post('/usuarios', function(req, res) {
+app.post('/users', function(req, res) {
     //Transforming information from request body with 
     //"Body Parser" library
     if (req.body.name === undefined) {
