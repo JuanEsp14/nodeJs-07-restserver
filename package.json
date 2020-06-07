@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-07-restserver",
+  "version": "1.0.0",
+  "description": "Rest server with NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanEsp14/nodeJs-07-restserver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuanEsp14/nodeJs-07-restserver/issues"
+  },
+  "homepage": "https://github.com/JuanEsp14/nodeJs-07-restserver#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
