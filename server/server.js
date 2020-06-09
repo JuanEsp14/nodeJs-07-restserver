@@ -1,7 +1,9 @@
 require('./config/config')
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const app = express();
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,6 +39,11 @@ app.put('/users/:id', function(req, res) {
 
 app.delete('/users', function(req, res) {
     res.json('delete Usuario')
+});
+
+mongoose.connect('mongodb://localhost:27017/cafe', (err, res) => {
+    if (err) throw err;
+    console.log("Base dedatos ONLINE");
 });
 
 app.listen(process.env.PORT, () => {
