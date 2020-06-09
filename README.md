@@ -1,6 +1,6 @@
 ### App RestServer ###
 
-App for practice funtionality REST in NodeJS
+App for practice funtionality REST on NodeJS
 
 For install execute this command
 ```
