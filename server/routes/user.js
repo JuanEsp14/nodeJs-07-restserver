@@ -7,8 +7,6 @@ app.get('/users', function(req, res) {
 });
 
 app.post('/users', function(req, res) {
-
-    console.log("RER BODY --->", req.body);
     let user = new User({
         name: req.body.name,
         email: req.body.email,
