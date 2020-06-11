@@ -1,6 +1,8 @@
 const express = require('express');
 const User = require('../models/user.models');
 const bcrypt = require('bcrypt');
+//added functions to JS
+const _ = require('underscore');
 const app = express();
 
 app.get('/users', function(req, res) {
@@ -48,11 +50,17 @@ app.post('/users', function(req, res) {
 app.put('/users/:id', function(req, res) {
 
     let id = req.params.id;
-    let body = req.body;
+    //Parameters that can update are
+    let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
+
+
+
+
 
     //In the third param (options) indicated if the object userDb is
     //the new or if this is de object before to update
-    User.findByIdAndUpdate(id, body, { new: true }, (err, userDb) => {
+    //runValidators run the validations that are in the models
+    User.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, userDb) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
