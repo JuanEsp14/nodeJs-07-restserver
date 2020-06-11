@@ -6,7 +6,25 @@ const _ = require('underscore');
 const app = express();
 
 app.get('/users', function(req, res) {
-    res.json('get Users')
+    let to = Number(req.query.to) || 0;
+    let from = Number(req.query.from) || 5;
+
+    User.find({})
+        .skip(to)
+        .limit(from)
+        .exec((err, users) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    message: err
+                })
+            }
+
+            res.json({
+                ok: true,
+                users
+            })
+        });
 });
 
 app.post('/users', function(req, res) {
