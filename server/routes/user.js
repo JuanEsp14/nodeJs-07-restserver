@@ -48,9 +48,23 @@ app.post('/users', function(req, res) {
 app.put('/users/:id', function(req, res) {
 
     let id = req.params.id;
-    res.json({
-        id
-    })
+    let body = req.body;
+
+    //In the third param (options) indicated if the object userDb is
+    //the new or if this is de object before to update
+    User.findByIdAndUpdate(id, body, { new: true }, (err, userDb) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+        res.json({
+            ok: true,
+            user: userDb
+        })
+    });
+
 });
 
 app.delete('/users', function(req, res) {

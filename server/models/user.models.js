@@ -39,6 +39,7 @@ let userSchema = mongoose.Schema({
     }
 });
 
+//Delete password parameter when return information to user
 userSchema.methods.toJSON = function() {
     let userJson = this;
     let userObject = userJson.toObject();
