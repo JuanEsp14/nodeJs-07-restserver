@@ -9,7 +9,8 @@ app.get('/users', function(req, res) {
     let to = Number(req.query.to) || 0;
     let from = Number(req.query.from) || 5;
 
-    User.find({})
+    //The second parameter indicates that it will be shown to users
+    User.find({}, 'name email role state google img')
         .skip(to)
         .limit(from)
         .exec((err, users) => {
@@ -20,10 +21,15 @@ app.get('/users', function(req, res) {
                 })
             }
 
-            res.json({
-                ok: true,
-                users
+            User.count({}, (err, quantity) => {
+                res.json({
+                    ok: true,
+                    users,
+                    quantity
+                });
             })
+
+
         });
 });
 
