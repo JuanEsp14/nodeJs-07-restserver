@@ -39,6 +39,14 @@ let userSchema = mongoose.Schema({
     }
 });
 
+userSchema.methods.toJSON = function() {
+    let userJson = this;
+    let userObject = userJson.toObject();
+    delete userObject.password;
+
+    return userObject;
+};
+
 userSchema.plugin(uniqueValidator, {
     message: '{PATH} must be unique'
 })
