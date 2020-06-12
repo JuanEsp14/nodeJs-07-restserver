@@ -10,7 +10,7 @@ app.get('/users', function(req, res) {
     let from = Number(req.query.from) || 5;
 
     //The second parameter indicates that it will be shown to users
-    User.find({}, 'name email role state google img')
+    User.find({ state: true }, 'name email role state google img')
         .skip(to)
         .limit(from)
         .exec((err, users) => {
@@ -21,7 +21,7 @@ app.get('/users', function(req, res) {
                 })
             }
 
-            User.count({}, (err, quantity) => {
+            User.count({ state: true }, (err, quantity) => {
                 res.json({
                     ok: true,
                     users,
@@ -102,29 +102,44 @@ app.put('/users/:id', function(req, res) {
 app.delete('/users/:id', function(req, res) {
     let id = req.params.id;
 
-    //Removed user complete
-    User.findByIdAndRemove(id, (err, deletedUser) => {
+    //Logic delete
+    let id = req.params.id;
+    User.findByIdAndUpdate(id, { state: false }, { new: true }, (err, userDb) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
                 err
             });
         }
-
-        if (!deletedUser) {
-            return res.status(400).json({
-                ok: false,
-                error: {
-                    message: 'User not exists'
-                }
-            });
-        }
-
         res.json({
             ok: true,
-            user: deletedUser
+            user: userDb
         })
     });
+
+    //Removed user complete
+    // User.findByIdAndRemove(id, (err, deletedUser) => {
+    //     if (err) {
+    //         return res.status(400).json({
+    //             ok: false,
+    //             err
+    //         });
+    //     }
+
+    //     if (!deletedUser) {
+    //         return res.status(400).json({
+    //             ok: false,
+    //             error: {
+    //                 message: 'User not exists'
+    //             }
+    //         });
+    //     }
+
+    //     res.json({
+    //         ok: true,
+    //         user: deletedUser
+    //     })
+    // });
 });
 
 module.exports = app;
