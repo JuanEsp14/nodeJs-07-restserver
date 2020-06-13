@@ -100,8 +100,6 @@ app.put('/users/:id', function(req, res) {
 });
 
 app.delete('/users/:id', function(req, res) {
-    let id = req.params.id;
-
     //Logic delete
     let id = req.params.id;
     User.findByIdAndUpdate(id, { state: false }, { new: true }, (err, userDb) => {
