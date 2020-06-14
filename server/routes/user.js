@@ -1,11 +1,13 @@
 const express = require('express');
-const User = require('../models/user.models');
 const bcrypt = require('bcrypt');
 //added functions to JS
 const _ = require('underscore');
+
+const User = require('../models/user.models');
+const { validateToken } = require('../middleware/authentication');
 const app = express();
 
-app.get('/users', function(req, res) {
+app.get('/users', validateToken, function(req, res) {
     let to = Number(req.query.to) || 0;
     let from = Number(req.query.from) || 5;
 
