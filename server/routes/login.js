@@ -56,14 +56,81 @@ async function verify(token) {
         audience: process.env.CLIENT_ID,
     });
     const payload = ticket.getPayload();
+
+    return {
+        name: payload.name,
+        email: payload.email,
+        img: payload.picture,
+        google: true
+    }
 }
 
-app.post('/gooogle', (req, res) => {
+app.post('/gooogle', async(req, res) => {
     let token = req.body.idtoken;
-    verify(token);
-    res.json({
-        token
-    })
+    let googleUser = await verify(token)
+        .catch(err => {
+            return res.status(403).json({
+                ok: false,
+                err
+            })
+        });
+
+    User.findOne({ email: googleUser.email }, (err, userDb) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (userDb) {
+            if (userDb.google === false) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: `Use your normal authentication`
+                    }
+                });
+            }
+            let token = jwt.sign({
+                user: userDb
+            }, process.env.SEED_TOKEN, { expiresIn: process.env.TOKEN_DATA_EXPIRED });
+
+            return res.json({
+                ok: true,
+                userDb,
+                token
+            });
+        }
+
+        //Create new user
+        let user = new User();
+        user.name = googleUser.name;
+        user.email = googleUser.email;
+        user.img = googleUser.picture;
+        user.google = googleUser.google;
+        user.password = ':)';
+
+        user.save((err, userDb) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            let token = jwt.sign({
+                user: userDb
+            }, process.env.SEED_TOKEN, { expiresIn: process.env.TOKEN_DATA_EXPIRED });
+
+            return res.json({
+                ok: true,
+                userDb,
+                token
+            });
+        });
+
+    });
 });
 
 module.exports = app;
