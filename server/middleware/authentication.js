@@ -20,4 +20,20 @@ let validateToken = (req, res, next) => {
     });
 };
 
-module.exports = { validateToken };
+//Validate role admin
+let validateRole = (req, res, next) => {
+    //Get user 
+    let user = req.user;
+    if (user.role != 'ADMIN_ROLE') {
+        return res.status(401).json({
+            ok: false,
+            err: {
+                message: "The user isn't admin"
+            }
+        });
+    }
+    //return to previus function
+    next();
+};
+
+module.exports = { validateToken, validateRole };

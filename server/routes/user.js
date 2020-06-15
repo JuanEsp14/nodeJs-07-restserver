@@ -4,15 +4,10 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const User = require('../models/user.models');
-const { validateToken } = require('../middleware/authentication');
+const { validateToken, validateRole } = require('../middleware/authentication');
 const app = express();
 
 app.get('/users', validateToken, function(req, res) {
-    return res.json({
-        user: req.user,
-        name: req.user.name,
-        email: req.user.email
-    });
 
     let to = Number(req.query.to) || 0;
     let from = Number(req.query.from) || 5;
@@ -41,7 +36,7 @@ app.get('/users', validateToken, function(req, res) {
         });
 });
 
-app.post('/users', validateToken, function(req, res) {
+app.post('/users', [validateToken, validateRole], function(req, res) {
     let user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -79,7 +74,7 @@ app.post('/users', validateToken, function(req, res) {
     // })
 });
 
-app.put('/users/:id', validateToken, function(req, res) {
+app.put('/users/:id', [validateToken, validateRole], function(req, res) {
 
     let id = req.params.id;
     //Parameters that can update are
@@ -107,7 +102,7 @@ app.put('/users/:id', validateToken, function(req, res) {
 
 });
 
-app.delete('/users/:id', validateToken, function(req, res) {
+app.delete('/users/:id', [validateToken, validateRole], function(req, res) {
     //Logic delete
     let id = req.params.id;
     User.findByIdAndUpdate(id, { state: false }, { new: true }, (err, userDb) => {
