@@ -8,7 +8,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 let urlDb;
 
 //Token configs
-process.env.TOKEN_DATA_EXPIRED = 60 * 60 * 24 * 30;
+process.env.TOKEN_DATA_EXPIRED = '48h';
 process.env.SEED_TOKEN = process.env.SEED_TOKEN || 'development-seed';
 
 if (process.env.NODE_ENV === 'dev') {
