@@ -62,6 +62,28 @@ app.get('/products/:id', validateToken, (req, res) => {
 
 });
 
+//Find products
+app.get('products/find/:keyword', validateToken, (req, res) => {
+    let keyword = req.params.keyword;
+    let regex = new RegExp(keyword, 'i');
+
+    Product.find({ name: regex })
+        .populate('category', 'description')
+    exec((err, products) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            })
+        }
+
+        res.json({
+            ok: true,
+            products
+        })
+    });
+});
+
 //Create a new product
 app.post('/products', validateToken, (req, res) => {
     let body = req.body;
