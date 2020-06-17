@@ -61,7 +61,7 @@ app.post('/category', validateToken, (req, res) => {
 
     let category = new Category({
         description: body.description,
-        usuario: req.usuario._id
+        usuario: req.user._id
     });
 
     category.save((err, categoryDb) => {
