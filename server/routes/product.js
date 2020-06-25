@@ -184,3 +184,5 @@ app.delete('/products/:id', validateToken, (req, res) => {
             })
         });
 });
+
+module.exports = app;
