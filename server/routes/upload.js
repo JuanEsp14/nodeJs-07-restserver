@@ -52,17 +52,50 @@ app.put('/upload/:type/:id', function(req, res) {
     let fileName = `${id}-${new Date().getMilliseconds()}.${extension}`;
 
     file.mv(`uploads/${type}/${fileName}`, (err) => {
-        if (err)
+        if (err) {
             return res.status(500)
                 .json({
                     ok: false,
                     err
                 });
-        res.json({
-            ok: true,
-            message: 'File uploaded!'
-        });
+        }
+
+        userImage(id, res, fileName);
+
     });
 });
+
+function userImage(id, res, fileName) {
+    User.findById(id, (err, userDb) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!userDb) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'User not exists'
+                }
+            });
+        }
+
+        userDb.img = fileName;
+        userDb.save((err, savedUser) => {
+            res.json({
+                ok: true,
+                user: savedUser
+            });
+        })
+
+    });
+}
+
+function productImage() {
+
+}
 
 module.exports = app;
