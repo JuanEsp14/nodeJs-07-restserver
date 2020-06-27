@@ -2,12 +2,22 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const app = express();
 
+const User = require('../models/user')
+
+//Valid extensions
+let validExtensions = ['png', 'jpg', 'gif', 'jpeg'];
+//Valid types
+let validTypes = ['products', 'users'];
+
 //Default options
 app.use(fileUpload({ useTempFiles: true }));
 
-app.put('/upload', function(req, res) {
+app.put('/upload/:type/:id', function(req, res) {
+    let type = req.params.type;
+    let id = req.params.id;
+
     if (!req.files)
-        return req.statusCode(400)
+        return res.status(400)
             .json({
                 ok: false,
                 err: {
@@ -15,10 +25,35 @@ app.put('/upload', function(req, res) {
                 }
             });
     let file = req.files.file;
+    let fileNameCompound = file.name.split('.');
+    let extension = fileNameCompound[fileNameCompound.length - 1];
 
-    file.mv('uploads/filename.png', (err) => {
+    if (validExtensions.indexOf(extension)) {
+        return res.status(400)
+            .json({
+                ok: false,
+                err: {
+                    message: 'Valid extensions are: ' + validExtensions.join(', ')
+                }
+            })
+    }
+
+    if (validTypes.indexOf(type) < 0) {
+        return res.status(400)
+            .json({
+                ok: false,
+                err: {
+                    message: 'Valid types are: ' + validTypes.join(', ')
+                }
+            })
+    }
+
+    //Changed file name
+    let fileName = `${id}-${new Date().getMilliseconds()}.${extension}`;
+
+    file.mv(`uploads/${type}/${fileName}`, (err) => {
         if (err)
-            return req.statusCode(500)
+            return res.status(500)
                 .json({
                     ok: false,
                     err
