@@ -2,7 +2,9 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const app = express();
 
-const User = require('../models/user')
+const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
 //Valid extensions
 let validExtensions = ['png', 'jpg', 'gif', 'jpeg'];
@@ -68,6 +70,7 @@ app.put('/upload/:type/:id', function(req, res) {
 function userImage(id, res, fileName) {
     User.findById(id, (err, userDb) => {
         if (err) {
+            deleteImage(fileName, validTypes[1]);
             return res.status(500).json({
                 ok: false,
                 err
@@ -75,6 +78,7 @@ function userImage(id, res, fileName) {
         }
 
         if (!userDb) {
+            deleteImage(fileName, validTypes[1]);
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -82,6 +86,8 @@ function userImage(id, res, fileName) {
                 }
             });
         }
+
+        deleteImage(userDb.img, validTypes[1]);
 
         userDb.img = fileName;
         userDb.save((err, savedUser) => {
@@ -96,6 +102,14 @@ function userImage(id, res, fileName) {
 
 function productImage() {
 
+}
+
+function deleteImage(nameImg, type) {
+    //Delete images
+    let pathImage = path.resolve(__dirname, `../../uploads/${type}/${nameImg}`);
+    if (fs.existsSync(pathImage)) {
+        fs.unlinkSync(pathImage);
+    }
 }
 
 module.exports = app;
