@@ -3,6 +3,7 @@ const fileUpload = require('express-fileupload');
 const app = express();
 
 const User = require('../models/user');
+const Product = require('../models/product');
 const fs = require('fs');
 const path = require('path');
 
@@ -62,7 +63,7 @@ app.put('/upload/:type/:id', function(req, res) {
                 });
         }
 
-        userImage(id, res, fileName);
+        type === validExtensions[0] ? userImage(id, res, fileName) : productImage(id, res, fileName);
 
     });
 });
@@ -100,8 +101,37 @@ function userImage(id, res, fileName) {
     });
 }
 
-function productImage() {
+function productImage(id, res, fileName) {
+    Product.findById(id, (err, productDb) => {
+        if (err) {
+            deleteImage(fileName, validTypes[0]);
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
 
+        if (!productDb) {
+            deleteImage(fileName, validTypes[0]);
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Product not exists'
+                }
+            });
+        }
+
+        deleteImage(productDb.img, validTypes[0]);
+
+        productDb.img = fileName;
+        productDb.save((err, savedProduct) => {
+            res.json({
+                ok: true,
+                product: savedProduct
+            });
+        })
+
+    });
 }
 
 function deleteImage(nameImg, type) {

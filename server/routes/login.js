@@ -5,7 +5,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
 
-const User = require('../models/user.models');
+const User = require('../models/user');
 const app = express();
 
 app.post('/login', (req, res) => {

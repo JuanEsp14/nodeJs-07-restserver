@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 //added functions to JS
 const _ = require('underscore');
 
-const User = require('../models/user.models');
+const User = require('../models/user');
 const { validateToken, validateRole } = require('../middleware/authentication');
 const app = express();
 
